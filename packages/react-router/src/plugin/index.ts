@@ -17,7 +17,8 @@ export default function Generouted(options?: Partial<Options>): Plugin {
     transform(code, id) {
       if (pagesDir === '/src/pages' || !id.includes('generouted') || !code.includes('/src/pages')) return
 
-      const transformed = code.replaceAll('/src/pages', pagesDir)
+      const escapedPagesDir = pagesDir.replaceAll('/', '\\/')
+      const transformed = code.replaceAll('/src/pages', pagesDir).replaceAll('\\/src\\/pages', escapedPagesDir)
       return transformed === code ? undefined : { code: transformed, map: null }
     },
     configureServer(server) {
