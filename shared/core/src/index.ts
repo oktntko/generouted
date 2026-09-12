@@ -1,12 +1,23 @@
 import { readFileSync } from 'fs'
 
-export const patterns = {
-  route: [/^.*\/src\/pages\/|^\/pages\/|\.(jsx|tsx|mdx)$/g, ''],
-  splat: [/\[\.{3}\w+\]/g, '*'],
-  param: [/\[([^\]]+)\]/g, ':$1'],
-  slash: [/^index$|\./g, '/'],
-  optional: [/^-(:?[\w-]+|\*)/, '$1?'],
-} as Record<string, [RegExp, string]>
+const escapeRegExp = (value: string) => value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+
+export const createPatterns = (pagesDir = './src/pages') =>
+  ({
+    route: [
+      new RegExp(
+        `^(?:.*\\/)?${escapeRegExp(pagesDir.replace(/^\.\//, '').replace(/\/$/, ''))}\\/|^\\/pages\\/|\\.(jsx|tsx|mdx)$`,
+        'g',
+      ),
+      '',
+    ],
+    splat: [/\[\.{3}\w+\]/g, '*'],
+    param: [/\[([^\]]+)\]/g, ':$1'],
+    slash: [/^index$|\./g, '/'],
+    optional: [/^-(:?[\w-]+|\*)/, '$1?'],
+  }) as Record<string, [RegExp, string]>
+
+export const patterns = createPatterns()
 
 const getRouteId = (path: string) => path.replace(...patterns.route).replace(/\W/g, '')
 

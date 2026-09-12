@@ -3,15 +3,16 @@ import fs from 'fs'
 import path from 'path'
 
 import { createLogger } from 'vite'
-import { patterns } from '@generouted/core'
+import { createPatterns } from '@generouted/core'
 import fg from 'fast-glob'
 
 import { Options } from './options'
 import { template } from './template'
 
 const generateRouteTypes = async (options: Options) => {
-  const files = await fg(options.source.routes || './src/pages/**/[\\w[-]*.{jsx,tsx,mdx}', { onlyFiles: true })
-  const modal = await fg(options.source.modals || './src/pages/**/[+]*.{jsx,tsx,mdx}', { onlyFiles: true })
+  const patterns = createPatterns(options.pagesDir)
+  const files = await fg(options.source.routes || `${options.pagesDir}/**/[\\w[-]*.{jsx,tsx,mdx}`, { onlyFiles: true })
+  const modal = await fg(options.source.modals || `${options.pagesDir}/**/[+]*.{jsx,tsx,mdx}`, { onlyFiles: true })
 
   const filtered = files.filter((key) => !key.includes('/_') && !key.includes('/404'))
   const params: string[] = []

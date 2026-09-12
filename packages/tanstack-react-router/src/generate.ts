@@ -1,20 +1,27 @@
 import { writeFileSync } from 'fs'
+import path from 'path'
 import fg from 'fast-glob'
 
-import { patterns as corePatterns, getRoutes } from '@generouted/core'
+import { createPatterns, getRoutes } from '@generouted/core'
 
 import { format } from './format'
 import { Options } from './options'
 import { template } from './template'
 
-const patterns = Object.assign(corePatterns, {
+const patterns = Object.assign(createPatterns(), {
   param: [/\[([^\]]+)\]/g, '$$$1'],
   optional: [/^-(\$?[\w-]+)/, '$1?'],
 }) as Record<string, [RegExp, string]>
 
-const generateRoutes = async () => {
-  const source = ['./src/pages/**/[\\w[-]*.{jsx,tsx}']
+const generateRoutes = async (options: Options) => {
+  const source = [`${options.pagesDir}/**/[\\w[-]*.{jsx,tsx}`]
   const files = await fg(source, { onlyFiles: true })
+  const routePatterns = { ...patterns, route: createPatterns(options.pagesDir).route }
+  const generatedOutput = path.join('./src', options.output)
+  const relativeModule = (key: string) => {
+    const file = path.relative(path.dirname(generatedOutput), key).replace(/\\/g, '/')
+    return `./${file.replace(/\.(jsx|tsx|mdx)$/, '')}`.replace(/^\.\/\.\//, '../')
+  }
 
   const imports: string[] = []
   const modules: string[] = []
@@ -23,8 +30,8 @@ const generateRoutes = async () => {
     files,
     (key, exports, _id = '') => {
       const { loader, action, pending, catch_ } = exports
-      const file = key.replace(...patterns.route)
-      const module = `import('./pages/${file}')`
+      const file = key.replace(...routePatterns.route)
+      const module = `import('${relativeModule(key)}')`
       const path = file
         .replace(...patterns.splat)
         .replace(...patterns.param)
@@ -46,18 +53,18 @@ const generateRoutes = async () => {
         _errorComponent: catch_ ? 'errorComponent: m.Catch' : '',
       }
     },
-    patterns,
+    routePatterns,
   )
 
   if (preserved._app && exports['_app'].default) {
-    imports.push(`import App from './pages/_app'`)
+    imports.push(`import App from '${relativeModule(`${options.pagesDir}/_app.tsx`)}'`)
     modules.push(`const root = createRootRoute({ component: App || Outlet })`)
   } else {
     modules.push(`const root = createRootRoute({ component: Outlet })`)
   }
 
   if (preserved._404 && exports['404'].default) {
-    imports.push(`import NoMatch from './pages/404'`)
+    imports.push(`import NoMatch from '${relativeModule(`${options.pagesDir}/404.tsx`)}'`)
     modules.push(`const _404 = createRoute({ getParentRoute: () => root, path: '*', component: NoMatch || Fragment })`)
   } else {
     modules.push(`const _404 = createRoute({ getParentRoute: () => root, path: '*', component:  Fragment })`)
@@ -101,7 +108,7 @@ let latestContent = ''
 
 export const generate = async (options: Options) => {
   const start = Date.now()
-  const { content, count } = await generateRoutes()
+  const { content, count } = await generateRoutes(options)
   console.log(`${new Date().toLocaleTimeString()} [generouted] ${count} routes in ${Date.now() - start} ms`)
 
   if (latestContent === content) return

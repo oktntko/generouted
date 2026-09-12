@@ -11,7 +11,8 @@ export default function Generouted(options?: Partial<Options>): Plugin {
     name: 'generouted/solid-router',
     enforce: 'pre',
     configureServer(server) {
-      const listener = (file = '') => (file.includes(path.normalize('/src/pages/')) ? generate(resolvedOptions) : null)
+      const pagesDir = path.resolve(resolvedOptions.pagesDir) + path.sep
+      const listener = (file = '') => (file.startsWith(pagesDir) ? generate(resolvedOptions) : null)
       server.watcher.on('add', listener)
       server.watcher.on('change', listener)
       server.watcher.on('unlink', listener)

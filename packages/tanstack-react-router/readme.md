@@ -38,6 +38,12 @@ import generouted from '@generouted/tanstack-react-router'
 export default defineConfig({ plugins: [react(), generouted()] })
 ```
 
+To use a different routes directory, pass `pagesDir` to the plugin:
+
+```ts
+export default defineConfig({ plugins: [react(), generouted({ pagesDir: './src/routes' })] })
+```
+
 ### Usage
 
 ```tsx

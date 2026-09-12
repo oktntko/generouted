@@ -1,4 +1,5 @@
 export const defaultOptions = {
+  pagesDir: './src/pages',
   output: 'routes.gen.tsx',
   format: true,
 }

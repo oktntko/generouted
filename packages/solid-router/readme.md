@@ -30,6 +30,12 @@ import generouted from '@generouted/solid-router/plugin'
 export default defineConfig({ plugins: [solid(), generouted()] })
 ```
 
+To use a different routes directory, pass `pagesDir` to the plugin:
+
+```ts
+export default defineConfig({ plugins: [solid(), generouted({ pagesDir: './src/routes' })] })
+```
+
 ### Usage
 
 ```tsx
