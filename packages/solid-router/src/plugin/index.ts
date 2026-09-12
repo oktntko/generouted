@@ -15,10 +15,15 @@ export default function Generouted(options?: Partial<Options>): Plugin {
     name: 'generouted/solid-router',
     enforce: 'pre',
     transform(code, id) {
-      if (pagesDir === '/src/pages' || !id.includes('generouted') || !code.includes('/src/pages')) return
+      if (
+        pagesDir === '/src/pages' ||
+        !id.includes('generouted') ||
+        (!code.includes('/src/pages') && !code.includes('\\/src\\/pages'))
+      )
+        return
 
       const escapedPagesDir = pagesDir.replaceAll('/', '\\/')
-      const transformed = code.replaceAll('/src/pages', pagesDir).replaceAll('\\/src\\/pages', escapedPagesDir)
+      const transformed = code.replaceAll('\\/src\\/pages', escapedPagesDir).replaceAll('/src/pages', pagesDir)
       return transformed === code ? undefined : { code: transformed, map: null }
     },
     configureServer(server) {
