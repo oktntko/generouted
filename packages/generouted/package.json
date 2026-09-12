@@ -85,6 +85,7 @@
   "scripts": {
     "dev": "vitest watch",
     "build": "tsc --emitDeclarationOnly --noEmit false --outDir dist",
+    "prepare": "pnpm build",
     "prepack": "pnpm build",
     "test": "vitest run",
     "type-check": "tsc --noEmit"
