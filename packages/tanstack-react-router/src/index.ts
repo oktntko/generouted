@@ -6,13 +6,13 @@ import { defaultOptions, Options } from './options'
 
 export default function Generouted(options?: Partial<Options>): Plugin {
   const resolvedOptions = { ...defaultOptions, ...options }
+  const pagesPath = path.resolve(resolvedOptions.pagesDir) + path.sep
 
   return {
     name: 'generouted/tanstack-react-router',
     enforce: 'pre',
     configureServer(server) {
-      const pagesDir = path.resolve(resolvedOptions.pagesDir) + path.sep
-      const listener = (file = '') => (file.startsWith(pagesDir) ? generate(resolvedOptions) : null)
+      const listener = (file = '') => (file.startsWith(pagesPath) ? generate(resolvedOptions) : null)
       server.watcher.on('add', listener)
       server.watcher.on('change', listener)
       server.watcher.on('unlink', listener)

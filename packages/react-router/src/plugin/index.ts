@@ -6,13 +6,23 @@ import { defaultOptions, Options } from './options'
 
 export default function Generouted(options?: Partial<Options>): Plugin {
   const resolvedOptions = { ...defaultOptions, ...options }
+  const pagesDir = `/${resolvedOptions.pagesDir
+    .replace(/\\/g, '/')
+    .replace(/^\.?\//, '')
+    .replace(/\/$/, '')}`
 
   return {
     name: 'generouted/react-router',
     enforce: 'pre',
+    transform(code, id) {
+      if (pagesDir === '/src/pages' || !id.includes('generouted') || !code.includes('/src/pages')) return
+
+      const transformed = code.replaceAll('/src/pages', pagesDir)
+      return transformed === code ? undefined : { code: transformed, map: null }
+    },
     configureServer(server) {
-      const pagesDir = path.resolve(resolvedOptions.pagesDir) + path.sep
-      const listener = (file = '') => (file.startsWith(pagesDir) ? generate(resolvedOptions) : null)
+      const pagesPath = path.resolve(resolvedOptions.pagesDir) + path.sep
+      const listener = (file = '') => (file.startsWith(pagesPath) ? generate(resolvedOptions) : null)
       server.watcher.on('add', listener)
       server.watcher.on('change', listener)
       server.watcher.on('unlink', listener)
