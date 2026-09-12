@@ -32,58 +32,60 @@
   "type": "module",
   "exports": {
     "./core": {
-      "types": "./src/core.ts",
+      "types": "./dist/core.d.ts",
       "import": "./src/core.ts"
     },
     "./react-location": {
-      "types": "./src/react-location.tsx",
+      "types": "./dist/react-location.d.ts",
       "import": "./src/react-location.tsx"
     },
     "./react-router-lazy": {
-      "types": "./src/react-router-lazy.tsx",
+      "types": "./dist/react-router-lazy.d.ts",
       "import": "./src/react-router-lazy.tsx"
     },
     "./react-router": {
-      "types": "./src/react-router.tsx",
+      "types": "./dist/react-router.d.ts",
       "import": "./src/react-router.tsx"
     },
     "./solid-router-lazy": {
-      "types": "./src/solid-router-lazy.tsx",
+      "types": "./dist/solid-router-lazy.d.ts",
       "import": "./src/solid-router-lazy.tsx"
     },
     "./solid-router": {
-      "types": "./src/solid-router.tsx",
+      "types": "./dist/solid-router.d.ts",
       "import": "./src/solid-router.tsx"
     }
   },
   "typesVersions": {
     "*": {
       "core": [
-        "./src/core.ts"
+        "./dist/core.d.ts"
       ],
       "react-location": [
-        "./src/react-location.tsx"
+        "./dist/react-location.d.ts"
       ],
       "react-router-lazy": [
-        "./src/react-router-lazy.tsx"
+        "./dist/react-router-lazy.d.ts"
       ],
       "react-router": [
-        "./src/react-router.tsx"
+        "./dist/react-router.d.ts"
       ],
       "solid-router-lazy": [
-        "./src/solid-router-lazy.tsx"
+        "./dist/solid-router-lazy.d.ts"
       ],
       "solid-router": [
-        "./src/solid-router.tsx"
+        "./dist/solid-router.d.ts"
       ]
     }
   },
   "files": [
-    "src"
+    "src",
+    "dist"
   ],
   "scripts": {
     "dev": "vitest watch",
     "build": "tsc --emitDeclarationOnly --noEmit false --outDir dist",
+    "prepack": "pnpm build",
     "test": "vitest run",
     "type-check": "tsc --noEmit"
   },
