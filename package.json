@@ -36,7 +36,7 @@
     "test": "turbo test",
     "type-check": "turbo type-check",
     "release": "release-it",
-    "prepare": "husky"
+    "prepare": "husky && pnpm build"
   },
   "devDependencies": {
     "@commitlint/cli": "^20.5.0",

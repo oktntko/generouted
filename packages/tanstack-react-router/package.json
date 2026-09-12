@@ -50,6 +50,7 @@
   "scripts": {
     "dev": "tsup src/index.ts --dts --format cjs,esm --watch",
     "build": "tsup src/index.ts --dts --format cjs,esm --minify --clean",
+    "prepare": "pnpm build",
     "type-check": "tsc --noEmit"
   },
   "dependencies": {

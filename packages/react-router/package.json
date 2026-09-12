@@ -78,6 +78,7 @@
   "scripts": {
     "dev": "tsup --watch",
     "build": "tsup --clean",
+    "prepare": "pnpm build",
     "type-check": "tsc --noEmit"
   },
   "dependencies": {
